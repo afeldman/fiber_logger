@@ -1,18 +1,22 @@
 package logger
 
+// configure the logging
 type LoggerConfig struct {
-	FileName string `mapstructure:"path"`
-	Size     int    `mapstructure:"max"`
-	Backups  int    `mapstructure:"backups"`
-	Age      int    `mapstructure:"age"`
-	Compress bool   `mapstructure:"compress"`
-	Level    string `mapstructure:"level"`
+	FileName string `mapstructure:"path"`     // filepath
+	Size     int    `mapstructure:"max"`      // maximum size of file in megabyte
+	Backups  int    `mapstructure:"backups"`  // number of backup files
+	Age      int    `mapstructure:"age"`      // age of a file in days
+	Compress bool   `mapstructure:"compress"` // compress the files
+	Level    string `mapstructure:"level"`    // set the log level default is error
 }
 
+// global logger configuration
 var LoggingConfig *LoggerConfig
 
+// build a logger configuration
 func InitLoggerConfig(filepath, loglevel string, sizeoffile, numberofbackups, ageoffile int, compress bool) *LoggerConfig {
-	LoggingConfig = &LoggerConfig{
+	// the logging configuration
+	return &LoggerConfig{
 		FileName: filepath,
 		Level:    loglevel,
 		Size:     sizeoffile,
@@ -21,15 +25,15 @@ func InitLoggerConfig(filepath, loglevel string, sizeoffile, numberofbackups, ag
 		Compress: compress,
 	}
 
-	return LoggingConfig
 }
 
+// build a default configuration
 func DefaultLoggingConfig() *LoggerConfig {
 	return InitLoggerConfig(
-		"./fiber_logger.log",
-		"info", // loglevel info
-		50,     // filesize is 50mb/file
-		5,      // 5 files in total
-		14,     // 14 days
-		false)  // nocompression
+		"./fiber_logger.log", //file name
+		"info",               // loglevel info
+		50,                   // filesize is 50mb/file
+		5,                    // 5 files in total
+		14,                   // 14 days
+		false)                // nocompression
 }
