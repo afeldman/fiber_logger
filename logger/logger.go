@@ -1,4 +1,4 @@
-package fiber_logger
+package logger
 
 import (
 	"strings"
@@ -11,7 +11,7 @@ import (
 var Logger *zap.SugaredLogger
 
 func logLevel() zapcore.LevelEnabler {
-	lower := strings.ToLower(noue_config.Config.Logger.Level)
+	lower := strings.ToLower(LoggingConfig.Level)
 	var level zapcore.LevelEnabler
 
 	switch lower {
@@ -34,13 +34,18 @@ func logLevel() zapcore.LevelEnabler {
 	return level
 }
 
-func InitNoueLogger() {
+func InitLogger() {
+
+	if LoggingConfig == nil {
+		DefaultLoggingConfig()
+	}
+
 	writerSyncer := getLogWriter()
 	encoder := getEncoder()
 	core := zapcore.NewCore(encoder, writerSyncer, logLevel())
 	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
-	NoueLogger = logger.Sugar()
-	defer NoueLogger.Sync()
+	Logger = logger.Sugar()
+	defer Logger.Sync()
 }
 
 func getEncoder() zapcore.Encoder {
@@ -52,67 +57,67 @@ func getEncoder() zapcore.Encoder {
 
 func getLogWriter() zapcore.WriteSyncer {
 	lumberJackLogger := &lumberjack.Logger{
-		Filename:   noue_config.Config.Logger.FileName,
-		MaxSize:    noue_config.Config.Logger.Size,
-		MaxBackups: noue_config.Config.Logger.Backups,
-		MaxAge:     noue_config.Config.Logger.Backups,
-		Compress:   noue_config.Config.Logger.Compress,
+		Filename:   LoggingConfig.FileName,
+		MaxSize:    LoggingConfig.Size,
+		MaxBackups: LoggingConfig.Backups,
+		MaxAge:     LoggingConfig.Backups,
+		Compress:   LoggingConfig.Compress,
 	}
 	return zapcore.AddSync(lumberJackLogger)
 }
 
 func Debug(args ...interface{}) {
-	NoueLogger.Debug(args...)
+	Logger.Debug(args...)
 }
 
 func Debugf(template string, args ...interface{}) {
-	NoueLogger.Debugf(template, args...)
+	Logger.Debugf(template, args...)
 }
 
 func Info(args ...interface{}) {
-	NoueLogger.Info(args...)
+	Logger.Info(args...)
 }
 
 func Infof(template string, args ...interface{}) {
-	NoueLogger.Infof(template, args...)
+	Logger.Infof(template, args...)
 }
 
 func Warn(args ...interface{}) {
-	NoueLogger.Warn(args...)
+	Logger.Warn(args...)
 }
 
 func Warnf(template string, args ...interface{}) {
-	NoueLogger.Warnf(template, args...)
+	Logger.Warnf(template, args...)
 }
 
 func Error(args ...interface{}) {
-	NoueLogger.Error(args...)
+	Logger.Error(args...)
 }
 
 func Errorf(template string, args ...interface{}) {
-	NoueLogger.Errorf(template, args...)
+	Logger.Errorf(template, args...)
 }
 
 func DPanic(args ...interface{}) {
-	NoueLogger.DPanic(args...)
+	Logger.DPanic(args...)
 }
 
 func DPanicf(template string, args ...interface{}) {
-	NoueLogger.DPanicf(template, args...)
+	Logger.DPanicf(template, args...)
 }
 
 func Panic(args ...interface{}) {
-	NoueLogger.Panic(args...)
+	Logger.Panic(args...)
 }
 
 func Panicf(template string, args ...interface{}) {
-	NoueLogger.Panicf(template, args...)
+	Logger.Panicf(template, args...)
 }
 
 func Fatal(args ...interface{}) {
-	NoueLogger.Fatal(args...)
+	Logger.Fatal(args...)
 }
 
 func Fatalf(template string, args ...interface{}) {
-	NoueLogger.Fatalf(template, args...)
+	Logger.Fatalf(template, args...)
 }
